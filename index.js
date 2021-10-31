@@ -23,6 +23,7 @@ async function run() {
 
         const database = client.db("TourismAgency");
         const allService = database.collection("service");
+        const newService = database.collection("userService")
 
         // post api start
 
@@ -32,6 +33,17 @@ async function run() {
             const result = await allService.insertOne(service);
             res.json(result)
         })
+
+
+
+        // user info submit 
+        app.post('/userService', async (req, res) => {
+            const userservice = req.body;
+            console.log('hit the post');
+            const newresult = await newService.insertOne(userservice);
+            res.json(newresult)
+        })
+
 
         // get single services
 
@@ -49,6 +61,25 @@ async function run() {
             const services = await cursor.toArray();
             res.send(services)
         })
+
+
+        // get user info
+
+        app.get('/userService', async (req, res) => {
+            const usecursor = newService.find({});
+            const details = await usecursor.toArray();
+            res.send(details)
+        })
+
+        // user info delete
+
+        app.delete('/userService/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId };
+            const result = await newService.deleteOne(query);
+            res.json(result)
+        })
+
     }
     finally {
         // await client.close()
